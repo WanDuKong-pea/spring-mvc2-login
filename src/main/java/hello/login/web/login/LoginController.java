@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Slf4j
@@ -25,7 +27,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute LoginForm form,
-                        BindingResult bindingResult){
+                        BindingResult bindingResult, HttpServletResponse response){
         if(bindingResult.hasErrors()){
             return "login/loginForm";
         }
@@ -39,8 +41,29 @@ public class LoginController {
         }
 
         //로그인 성공 처리
-        //ToDo 이후 강의 설명
+        //ToDo 세션 쿠키 만들기
+        Cookie idCookie = new Cookie("memberId",String.valueOf(loginMember.getId()));
+                        //Member 의 id를 String 으로 변환하여 담음
+        response.addCookie(idCookie);
         return "redirect:/";
+    }
+
+    /**
+     * 로그아웃 로직
+     */
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse response){
+        expireCookie(response, "memberId");
+        return "redirect:/";
+    }
+
+    /**
+     * cookie.setMaxAge(0) <- 해당 쿠키 즉시 종료
+     */
+    private void expireCookie(HttpServletResponse response, String cookieName){
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
 }
