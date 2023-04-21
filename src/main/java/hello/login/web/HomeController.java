@@ -2,6 +2,7 @@ package hello.login.web;
 
 import hello.login.domain.member.Member;
 import hello.login.domain.member.MemberRepository;
+import hello.login.web.login.SessionConst;
 import hello.login.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Slf4j
 @Controller
@@ -53,7 +55,7 @@ public class HomeController {
         return "loginHome";
     }*/
 
-    //직접 만든 세션으로 처리하는 홈
+    /*//직접 만든 세션으로 처리하는 홈
     @GetMapping("/")
     public String homeLoginV2(HttpServletRequest request, Model model){
         //세션 관리자에 저장된 회원 정보를 조회
@@ -67,5 +69,33 @@ public class HomeController {
         //로그인 된 사용자
         model.addAttribute("member",member);
         return "loginHome";
+    }*/
+
+    //HttpSession을 이용한 홈
+    @GetMapping("/")
+    public String homeLoginV3(HttpServletRequest request, Model model){
+        //세션 관리자에 저장된 회원 정보를 조회
+        HttpSession session = request.getSession(false);
+
+        //세션이 없으면 home
+        if(session == null){
+            return "home";
+        }
+
+        //세션이 있다면 로그인한 멤버 찾아 담기
+        Member loginMember = (Member)session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        //세션에 회원 데이터가 없으면 home
+        //로그인하지 않은 사용자라도 페이지에 방문할 떄 HttpSession이 생성되어버림
+        //getSession<-기본값 true
+        if(loginMember == null){
+            return "home";
+        }
+
+        //로그인 된 사용자(세션 유지되어 있으면)
+        model.addAttribute("member",loginMember);
+        return "loginHome";
     }
+
+
 }
