@@ -102,6 +102,7 @@ public class LoginController {
         //세션이 있으면 있는 세션 반환, 없으면 신규 세션 생성 (기본 true 옵션)
         HttpSession session = request.getSession();
         //세션에 로그인 회원 정보 보관
+        //예제에서는 세션에 객체를 넣었지만 실무에서는 최소한의 단위(필요한 것 ex:id)만 사용해야함
         session.setAttribute(SessionConst.LOGIN_MEMBER,loginMember);
         return "redirect:/";
     }
