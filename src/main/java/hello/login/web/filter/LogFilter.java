@@ -19,7 +19,7 @@ public class LogFilter implements Filter { //필터를 사용하려면 필터 �
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         //ServletRequest request는 HTTP 요청이 아닌 경우까지 고려
-        //(HttpServletRequest)로 다운 케스팅.
+        //(HttpServletRequest)로 다운 케스팅 (ServletRequest 기능이 부족).
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String requestURI = httpRequest.getRequestURI();
 
