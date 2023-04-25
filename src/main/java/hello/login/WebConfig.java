@@ -3,6 +3,7 @@ package hello.login;
 import hello.login.web.filter.LogFilter;
 import hello.login.web.filter.LoginCheckFilter;
 import hello.login.web.interceptor.LogInterceptor;
+import hello.login.web.interceptor.LoginCheckInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +33,7 @@ public class WebConfig implements WebMvcConfigurer { //implements WebMvcConfigur
         return filterRegistrationBean;
     }
 
-    @Bean //로그인 필터 등록 빈
+    //@Bean //로그인 필터 등록 빈
     public FilterRegistrationBean loginCheckFilter(){
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
 
@@ -45,6 +46,8 @@ public class WebConfig implements WebMvcConfigurer { //implements WebMvcConfigur
 
     @Override //WebMvcConfigurer 의 인터셉터 등록 메서드
     public void addInterceptors(InterceptorRegistry registry){
+
+        //Log 인터셉터 등록
         registry.addInterceptor(new LogInterceptor()) //인터셉터 등록
                 .order(1) //인터셉터 호출 순서. 낮을 수록 먼저 호출
                 .addPathPatterns("/**") //인터셉터를 적용할 URL 패턴 지정
@@ -52,9 +55,15 @@ public class WebConfig implements WebMvcConfigurer { //implements WebMvcConfigur
                 //filter 와 urlPattern 다르게 사용.
                 //filter "/*" -> interceptor "/**"
 
+        //로그인 인증 체크 인테셉터 등록
+        registry.addInterceptor(new LoginCheckInterceptor())
+                .order(2)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/css/**","/*.ico","/error",
+                        "/","/login","/logout","/members/add");
+
         //필터와 비교해보면 인터셉터는 addPathPatterns, excludePathPatterns로
         //매우 정밀하게 URL 패턴을 지정 가능
-
+        //웬만해서 특별한 문제가 없다면 filter 보다 interceptor 사용 권장 (더 편리)
     }
-
 }
