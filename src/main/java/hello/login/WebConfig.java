@@ -1,5 +1,6 @@
 package hello.login;
 
+import hello.login.web.argumentresolver.LoginMemberArgumentResolver;
 import hello.login.web.filter.LogFilter;
 import hello.login.web.filter.LoginCheckFilter;
 import hello.login.web.interceptor.LogInterceptor;
@@ -7,10 +8,12 @@ import hello.login.web.interceptor.LoginCheckInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
+import java.util.List;
 
 //@Configuration: 수동으로 스프링 컨테이너에 빈을 등록하는 설정 클래스 애노테이션 + @Bean
 //@Component : 빈 자동 등록 애노테이션
@@ -65,5 +68,11 @@ public class WebConfig implements WebMvcConfigurer { //implements WebMvcConfigur
         //필터와 비교해보면 인터셉터는 addPathPatterns, excludePathPatterns로
         //매우 정밀하게 URL 패턴을 지정 가능
         //웬만해서 특별한 문제가 없다면 filter 보다 interceptor 사용 권장 (더 편리)
+    }
+
+    //직접 만든 LoginMemberArgumentResolver 등록
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers){
+        resolvers.add(new LoginMemberArgumentResolver());
     }
 }
