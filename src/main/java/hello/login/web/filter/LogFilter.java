@@ -35,7 +35,8 @@ public class LogFilter implements Filter { //필터를 사용하려면 필터 �
         } catch (Exception e) {
             throw e;
         } finally {
-            log.info("RESPONSE [{}][{}]", uuid, requestURI);
+            //request.getDispatcherType() 예외 처리 페이지 요청시 WAS에서 ERROR 코드를 담아줌
+            log.info("RESPONSE [{}][{}][{}]", uuid, request.getDispatcherType(), requestURI);
         }
     }
 

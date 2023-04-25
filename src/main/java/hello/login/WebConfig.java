@@ -12,6 +12,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import java.util.List;
 
@@ -33,6 +34,12 @@ public class WebConfig implements WebMvcConfigurer { //implements WebMvcConfigur
         filterRegistrationBean.setOrder(1);
         //필터를 적용할 URL패턴을 지정. 한번에 여러개 가능
         filterRegistrationBean.addUrlPatterns("/*");
+
+        //setDispatcherTypes()의 파라미터에 해당되는 코드 일떄 필터가 실행됨
+        //기본 값은 REQUEST, 즉 ERROR 페이지 요청시 필터가 재요청되지 않기를 바란다면 기본값 사용하면됨
+        //ERROR 페이지 요청 필터를 적용하고 싶다면 파라미터로 DispatcherType.ERROR만 넘기면 됨.
+        filterRegistrationBean.setDispatcherTypes(DispatcherType.REQUEST,DispatcherType.ERROR);
+
         return filterRegistrationBean;
     }
 
