@@ -61,9 +61,14 @@ public class WebConfig implements WebMvcConfigurer { //implements WebMvcConfigur
         registry.addInterceptor(new LogInterceptor()) //인터셉터 등록
                 .order(1) //인터셉터 호출 순서. 낮을 수록 먼저 호출
                 .addPathPatterns("/**") //인터셉터를 적용할 URL 패턴 지정
-                .excludePathPatterns("/css/**","/*.ico","/error"); //인터셉터에서 제외할 패턴 지정
+                .excludePathPatterns("/css/**","/*.ico","/error",
+                        "/error-page/**"); //인터셉터에서 제외할 패턴 지정
+                        //인터셉터는 스프링이 제공하는 기능이기 때문에 DispatcherType과 무관하게 항상 호출됨
+                        //따라서 오류페이지 경로를 규칙성 있게 만들고 excludePathPatterns에서 빼주면 됨
+
                 //filter 와 urlPattern 다르게 사용.
                 //filter "/*" -> interceptor "/**"
+
 
         //로그인 인증 체크 인테셉터 등록
         registry.addInterceptor(new LoginCheckInterceptor())
